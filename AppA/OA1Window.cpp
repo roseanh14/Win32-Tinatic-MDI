@@ -11,122 +11,72 @@ static HWND s_hList = NULL;
 
 HWND GetOA1Window() { return s_hOA1; }
 
-// Build the dropdown menu for OA1 programmatically (no .rc file needed)
-static HMENU CreateOA1Menu() {
-    HMENU hBar = CreateMenu();
-    HMENU hData = CreatePopupMenu();
+#define BTN_SEND_OA2   301
+#define BTN_CLIPBOARD  302
+#define BTN_PIPE       303
+#define BTN_DDE        304
 
-    AppendMenuW(hData, MF_STRING, IDM_DATA_DISPLAY, L"1.  Display Data Here");
-    AppendMenuW(hData, MF_STRING, IDM_DATA_SEND_OA2, L"2.  Send to OA2  (direct)");
-    AppendMenuW(hData, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hData, MF_STRING, IDM_DATA_SEND_CLIPBOARD, L"3.  Copy to Clipboard");
-    AppendMenuW(hData, MF_STRING, IDM_DATA_PASTE_OA2, L"4.  Paste Clipboard -> OA2");
-    AppendMenuW(hData, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hData, MF_STRING, IDM_DATA_SEND_PIPE, L"5.  Launch AppB via Pipe");
-    AppendMenuW(hData, MF_STRING, IDM_DATA_SEND_DDE, L"6.  Send to OA2  (DDE)");
-
-    AppendMenuW(hBar, MF_POPUP, (UINT_PTR)hData, L"Data");
-    return hBar;
-}
-
-static void SetFrameMenuFromChild(HWND hwndChild) {
-    HWND hFrame = GetParent(GetParent(hwndChild)); // child -> MDI client -> frame
-    if (!hFrame) return;
-    SetMenu(hFrame, CreateOA1Menu());
-    DrawMenuBar(hFrame);
-}
-
-// Fill the listbox with one line per passenger
-static void PopulateList(HWND hwndOwner) {
-    const size_t n = TitanicData::GetPassengers().size();
-    if (n == 0) {
-        MessageBoxW(
-            hwndOwner,
-            L"No passengers loaded (0).\n\nThis usually means titanic.csv was not loaded.\nCheck working directory / data folder.",
-            L"OA1",
-            MB_OK | MB_ICONWARNING
-        );
-        SendMessage(s_hList, LB_RESETCONTENT, 0, 0);
-        return;
-    }
-
+static void PopulateList() {
     SendMessage(s_hList, LB_RESETCONTENT, 0, 0);
-
-    for (const auto& p : TitanicData::GetPassengers()) {
-        std::wstring line = TitanicData::GetSummaryLine(p);
-        SendMessageW(s_hList, LB_ADDSTRING, 0, (LPARAM)line.c_str());
-    }
+    for (auto& p : TitanicData::GetPassengers())
+        SendMessage(s_hList, LB_ADDSTRING, 0,
+            (LPARAM)TitanicData::GetSummaryLine(p).c_str());
 }
 
-// The window procedure for OA1
 static LRESULT CALLBACK OA1Proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_CREATE:
-        s_hList = CreateWindowW(
-            L"LISTBOX", NULL,
+        CreateWindowW(L"BUTTON", L"Send to OA2",
+            WS_CHILD | WS_VISIBLE, 4, 4, 110, 24,
+            hwnd, (HMENU)BTN_SEND_OA2, GetModuleHandleW(NULL), NULL);
+        CreateWindowW(L"BUTTON", L"Copy to Clipboard",
+            WS_CHILD | WS_VISIBLE, 120, 4, 140, 24,
+            hwnd, (HMENU)BTN_CLIPBOARD, GetModuleHandleW(NULL), NULL);
+        CreateWindowW(L"BUTTON", L"Launch AppB (Pipe)",
+            WS_CHILD | WS_VISIBLE, 266, 4, 140, 24,
+            hwnd, (HMENU)BTN_PIPE, GetModuleHandleW(NULL), NULL);
+        CreateWindowW(L"BUTTON", L"Send via DDE",
+            WS_CHILD | WS_VISIBLE, 412, 4, 120, 24,
+            hwnd, (HMENU)BTN_DDE, GetModuleHandleW(NULL), NULL);
+        s_hList = CreateWindowW(L"LISTBOX", NULL,
             WS_CHILD | WS_VISIBLE | WS_VSCROLL | LBS_NOINTEGRALHEIGHT,
-            0, 0, 0, 0,
-            hwnd,
-            (HMENU)IDC_OA1_LISTBOX,
-            GetModuleHandleW(NULL),
-            NULL
-        );
-
-        SendMessageW(s_hList, WM_SETFONT, (WPARAM)GetStockObject(SYSTEM_FIXED_FONT), TRUE);
-
-        // Ensure the menu is visible immediately (not only after activation)
-        SetFrameMenuFromChild(hwnd);
+            0, 32, 0, 0, hwnd,
+            (HMENU)IDC_OA1_LISTBOX, GetModuleHandleW(NULL), NULL);
+        SendMessage(s_hList, WM_SETFONT,
+            (WPARAM)GetStockObject(SYSTEM_FIXED_FONT), TRUE);
+        PopulateList();
         return 0;
 
     case WM_SIZE:
-        if (s_hList) {
-            MoveWindow(s_hList, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
-        }
-        return 0;
-
-    case WM_MDIACTIVATE:
-        // When OA1 gains focus, show its menu on the frame window
-        if ((HWND)lParam == hwnd) {
-            SetFrameMenuFromChild(hwnd);
-        }
+        MoveWindow(s_hList, 0, 32,
+            LOWORD(lParam), HIWORD(lParam) - 32, TRUE);
         return 0;
 
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
-        case IDM_DATA_DISPLAY:
-            PopulateList(hwnd);
-            break;
-
-        case IDM_DATA_SEND_OA2:
+        case BTN_SEND_OA2:
             SendDataToOA2(TitanicData::ToTabDelimited());
             break;
-
-        case IDM_DATA_SEND_CLIPBOARD:
-            if (CopyToClipboard(TitanicData::ToTabDelimited())) {
-                MessageBoxW(
-                    hwnd,
-                    L"Data copied.\nUse menu item 4 to paste into OA2.",
-                    L"Clipboard",
-                    MB_OK | MB_ICONINFORMATION
-                );
-            }
+        case BTN_CLIPBOARD: {
+            // Pass row count so the header can store it
+            DWORD rows = (DWORD)TitanicData::GetPassengers().size();
+            CopyToClipboard(TitanicData::ToTabDelimited(), rows);
+            MessageBoxW(hwnd,
+                L"Copied to clipboard using custom TitanicPassengerTable format.\n"
+                L"Click 'Paste from Clipboard' in OA2 or press Ctrl+V there.\n\n"
+                L"Note: plain Ctrl+V in other apps will NOT work — custom format only.",
+                L"Clipboard", MB_ICONINFORMATION);
             break;
-
-        case IDM_DATA_PASTE_OA2:
-            PasteFromClipboardToOA2();
-            break;
-
-        case IDM_DATA_SEND_PIPE:
+        }
+        case BTN_PIPE:
             LaunchAppBWithPipe(TitanicData::ToTabDelimited());
             break;
-
-        case IDM_DATA_SEND_DDE:
+        case BTN_DDE:
             DDESendToOA2(TitanicData::ToTabDelimited());
             break;
         }
         return 0;
     }
-
     return DefMDIChildProc(hwnd, msg, wParam, lParam);
 }
 
@@ -143,11 +93,9 @@ bool RegisterOA1Class(HINSTANCE hInst) {
 HWND CreateOA1Window(HWND hMDIClient) {
     MDICREATESTRUCT mcs = {};
     mcs.szClass = OA1_CLASS;
-    mcs.szTitle = L"OA1  -  Data Source  (use Data menu)";
+    mcs.szTitle = L"OA1  --  CSV Data Source";
     mcs.hOwner = GetModuleHandleW(NULL);
-    mcs.x = CW_USEDEFAULT; mcs.y = CW_USEDEFAULT;
-    mcs.cx = 750; mcs.cy = 420;
-
-    s_hOA1 = (HWND)SendMessageW(hMDIClient, WM_MDICREATE, 0, (LPARAM)&mcs);
+    mcs.x = 10; mcs.y = 10; mcs.cx = 780; mcs.cy = 460;
+    s_hOA1 = (HWND)SendMessage(hMDIClient, WM_MDICREATE, 0, (LPARAM)&mcs);
     return s_hOA1;
 }

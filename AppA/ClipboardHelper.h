@@ -2,10 +2,15 @@
 #include <windows.h>
 #include <string>
 
-// --- Clipboard functions ---
-// The clipboard is Windows' built-in copy/paste system
-// We register a CUSTOM format so only our app can read our special table data
+// Custom binary header prepended to all clipboard data
+// This ensures ONLY our app can read the data (not plain Ctrl+V)
+struct TitanicClipHeader {
+    DWORD magic;    // must be 0x54495441 ("TITA") to be valid
+    DWORD version;  // format version = 1
+    DWORD rows;     // number of passenger rows
+    DWORD reserved;
+};
 
-void         InitClipboardFormat();                     // Register our format (call once)
-bool         CopyToClipboard(const std::wstring& data); // Put data into clipboard
-std::wstring PasteFromClipboard();                      // Get our data back from clipboard
+void         InitClipboardFormat();
+bool         CopyToClipboard(const std::wstring& data, DWORD rowCount);
+std::wstring PasteFromClipboard();  // returns empty if format not valid
