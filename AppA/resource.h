@@ -1,25 +1,27 @@
 #pragma once
 
-// Menu Commands
-#define IDM_DATA_DISPLAY         1001
-#define IDM_DATA_SEND_OA2        1002
-#define IDM_DATA_SEND_CLIPBOARD  1003
-#define IDM_DATA_PASTE_OA2       1004
-#define IDM_DATA_SEND_PIPE       1005
-#define IDM_DATA_SEND_DDE        1006
+// --- These are just numbers we give names to ---
+// Think of them like labels for buttons and menu items
+// IDM = ID for Menu item, IDC = ID for Control
 
-// Control IDs
-#define IDC_OA1_LISTBOX          2001
-#define IDC_OA2_LISTBOX          2002
+#define IDM_DATA_DISPLAY         1001   // Menu: show data in OA1
+#define IDM_DATA_SEND_OA2        1002   // Menu: send directly to OA2
+#define IDM_DATA_SEND_CLIPBOARD  1003   // Menu: copy to clipboard
+#define IDM_DATA_PASTE_OA2       1004   // Menu: paste clipboard into OA2
+#define IDM_DATA_SEND_PIPE       1005   // Menu: launch AppB and send via pipe
+#define IDM_DATA_SEND_DDE        1006   // Menu: send to OA2 via DDE protocol
 
-// Window class names
+#define IDC_OA1_LISTBOX          2001   // The list control inside OA1
+#define IDC_OA2_LISTBOX          2002   // The list control inside OA2
+
+// --- Window class names (like "types" of windows) ---
 #define FRAME_CLASS              L"TitanicMDIFrame"
 #define OA1_CLASS                L"TitanicOA1"
 #define OA2_CLASS                L"TitanicOA2"
 
-// App strings
+// --- Text strings used in the app ---
 #define APP_TITLE                L"Titanic MDI - App A"
 #define DDE_SERVICE              L"TitanicDDE"
 #define DDE_TOPIC                L"Passengers"
-#define CLIPBOARD_FORMAT_NAME    L"TitanicPassengerTable"
+#define CLIPBOARD_FORMAT_NAME    L"TitanicPassengerTable"  // Our custom format name
 #define APPB_EXE                 L"AppB.exe"

@@ -1,0 +1,4 @@
+C:/Users/rose_/Desktop/Win32-Titanic-MDI/out/build/x64-Debug/CMakeFiles/AppA.dir
+C:/Users/rose_/Desktop/Win32-Titanic-MDI/out/build/x64-Debug/CMakeFiles/AppB.dir
+C:/Users/rose_/Desktop/Win32-Titanic-MDI/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/rose_/Desktop/Win32-Titanic-MDI/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

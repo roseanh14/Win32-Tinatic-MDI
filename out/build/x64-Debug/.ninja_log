@@ -1,0 +1,12 @@
+# ninja log v6
+5	486	7941021919780768	CMakeFiles/AppB.dir/AppB/main.cpp.obj	4abe0e0f7d967717
+489	649	7941021924710749	AppB.exe	64554fcbabdc154c
+690	1339	7941021926749539	CMakeFiles/AppA.dir/AppA/ClipboardHelper.cpp.obj	6e18c063f2492e3
+700	1371	7941021926808908	CMakeFiles/AppA.dir/AppA/PipeLauncher.cpp.obj	16aa136d5dd28225
+649	1379	7941021926286489	CMakeFiles/AppA.dir/AppA/main.cpp.obj	ff8a638aaf8d198
+5	466	7941032207368453	CMakeFiles/AppA.dir/AppA/MDIFrame.cpp.obj	bd3eeb00a679fa0e
+681	1581	7941021926657396	CMakeFiles/AppA.dir/AppA/TitanicData.cpp.obj	4bc6c266e4499cfa
+5	760	7941031026216078	CMakeFiles/AppA.dir/AppA/OA1Window.cpp.obj	79e8939a74d08a24
+10	485	7941023913262234	CMakeFiles/AppA.dir/AppA/DDEServer.cpp.obj	b97adecfe634e397
+4	490	7941023913262234	CMakeFiles/AppA.dir/AppA/OA2Window.cpp.obj	e9efa514afc4fa40
+467	658	7941032211970764	AppA.exe	a7bd863f79b825d6
