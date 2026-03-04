@@ -4,7 +4,6 @@
 #include <ddeml.h>
 #include <string>
 
-// Tell linker: DDE functions live in user32 in modern Windows SDK
 #pragma comment(lib, "user32.lib")
 
 static DWORD        s_inst = 0;
@@ -52,7 +51,6 @@ void DDEServerShutdown() {
 void DDESendToOA2(const std::wstring& data) {
     s_data = data;
 
-    // Connect as client to our own server and request the data
     DWORD clientInst = 0;
     if (DdeInitializeW(&clientInst, DdeCb, APPCMD_CLIENTONLY, 0) != DMLERR_NO_ERROR) {
         SendDataToOA2(data); return;
@@ -74,12 +72,12 @@ void DDESendToOA2(const std::wstring& data) {
             DdeFreeDataHandle(hResult);
         }
         else {
-            SendDataToOA2(data); // fallback
+            SendDataToOA2(data); 
         }
         DdeDisconnect(hConv);
     }
     else {
-        SendDataToOA2(data); // fallback
+        SendDataToOA2(data);
     }
 
     DdeFreeStringHandle(clientInst, hSvc);

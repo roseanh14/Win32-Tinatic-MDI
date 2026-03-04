@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-// --- A "struct" is like a data record - one row of the CSV ---
-// Every passenger has these fields
 struct Passenger {
     int          passengerId;   // Unique number for this passenger
     int          survived;      // 1 = survived, 0 = died
@@ -20,8 +18,6 @@ struct Passenger {
     std::wstring embarked;      // Port: C=Cherbourg, Q=Queenstown, S=Southampton
 };
 
-// --- A "class" groups related functions together ---
-// "static" means you call it as TitanicData::LoadCSV() without creating an object
 class TitanicData {
 public:
     static bool                          LoadCSV(const std::wstring& path);

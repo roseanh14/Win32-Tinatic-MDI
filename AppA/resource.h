@@ -1,8 +1,5 @@
 #pragma once
 
-// --- These are just numbers we give names to ---
-// Think of them like labels for buttons and menu items
-// IDM = ID for Menu item, IDC = ID for Control
 
 #define IDM_DATA_DISPLAY         1001   // Menu: show data in OA1
 #define IDM_DATA_SEND_OA2        1002   // Menu: send directly to OA2

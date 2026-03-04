@@ -17,8 +17,7 @@ add_executable(AppA WIN32
 target_include_directories(AppA PRIVATE AppA)
 target_link_libraries(AppA user32 gdi32)
 target_compile_definitions(AppA PRIVATE UNICODE _UNICODE)
-# ddeml functions are inside user32 in modern Windows SDK
-# suppress the linker error if ddeml.lib pragma is triggered by ddeml.h
+
 
 
 add_executable(AppB WIN32

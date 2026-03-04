@@ -32,14 +32,12 @@ static LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 
     case WM_COMMAND:
     {
-        // Forward menu commands to the currently active MDI child window
         HWND hActive = (HWND)SendMessageW(s_hMDIClient, WM_MDIGETACTIVE, 0, 0);
         if (hActive) {
             SendMessageW(hActive, WM_COMMAND, wParam, lParam);
             return 0;
         }
 
-        // Fallback: if nothing active, send to OA1 if it exists
         if (GetOA1Window()) {
             SendMessageW(GetOA1Window(), WM_COMMAND, wParam, lParam);
             return 0;
