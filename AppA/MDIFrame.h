@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
 
-bool RegisterMDIFrameClass(HINSTANCE hInst);
-HWND CreateMDIFrameWindow(HINSTANCE hInst, int nCmdShow);
-HWND GetMDIClient();  
+bool RegisterFrameClass(HINSTANCE hInst);
+HWND CreateFrameWindow(HINSTANCE hInst);
+HWND GetMDIClient();

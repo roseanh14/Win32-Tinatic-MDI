@@ -23,3 +23,16 @@
 1219	2286	7943427646841569	CMakeFiles/AppA.dir/AppA/OA1Window.cpp.obj	79e8939a74d08a24
 1232	2539	7943427646980549	CMakeFiles/AppA.dir/AppA/TitanicData.cpp.obj	4bc6c266e4499cfa
 2539	2925	7943427660007990	AppA.exe	a7bd863f79b825d6
+29	1269	7944301923447781	CMakeFiles/AppA.dir/AppA/MDIFrame.cpp.obj	bd3eeb00a679fa0e
+19	1276	7944301923373409	CMakeFiles/AppA.dir/AppA/main.cpp.obj	ff8a638aaf8d198
+61	1281	7944301923812624	CMakeFiles/AppA.dir/AppA/PipeLauncher.cpp.obj	16aa136d5dd28225
+47	1287	7944301923648610	CMakeFiles/AppA.dir/AppA/OA2Window.cpp.obj	e9efa514afc4fa40
+69	1292	7944301923878554	CMakeFiles/AppA.dir/AppA/DDEServer.cpp.obj	b97adecfe634e397
+54	1304	7944301923730679	CMakeFiles/AppA.dir/AppA/ClipboardHelper.cpp.obj	6e18c063f2492e3
+40	1314	7944301923589856	CMakeFiles/AppA.dir/AppA/OA1Window.cpp.obj	79e8939a74d08a24
+15	890	7944304402747266	CMakeFiles/AppA.dir/AppA/MDIFrame.cpp.obj	bd3eeb00a679fa0e
+30	918	7944304402888427	CMakeFiles/AppA.dir/AppA/OA2Window.cpp.obj	e9efa514afc4fa40
+23	927	7944304402799316	CMakeFiles/AppA.dir/AppA/OA1Window.cpp.obj	79e8939a74d08a24
+37	940	7944304402957976	CMakeFiles/AppA.dir/AppA/DDEServer.cpp.obj	b97adecfe634e397
+8	781	7944305954846675	CMakeFiles/AppA.dir/AppA/main.cpp.obj	ff8a638aaf8d198
+782	1098	7944305962607742	AppA.exe	a7bd863f79b825d6

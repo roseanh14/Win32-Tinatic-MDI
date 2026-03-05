@@ -10,14 +10,13 @@ static HWND s_hList = NULL;
 
 HWND GetOA2Window() { return s_hOA2; }
 
-#define WM_RECEIVE_DATA  (WM_USER + 1)
-#define BTN_PASTE        401
+#define WM_RECEIVE_DATA (WM_USER + 1)
 
 static void SetupColumns(HWND hLV) {
     LVCOLUMNW col = {};
     col.mask = LVCF_TEXT | LVCF_WIDTH;
     const wchar_t* headers[] = { L"ID", L"Survived", L"Class", L"Name", L"Sex", L"Age", L"Fare" };
-    int widths[] = { 40, 70, 55, 200, 60, 45, 65 };
+    int widths[] = { 40, 70, 55, 220, 60, 45, 70 };
     for (int i = 0; i < 7; i++) {
         col.pszText = (LPWSTR)headers[i];
         col.cx = widths[i];
@@ -27,19 +26,18 @@ static void SetupColumns(HWND hLV) {
 
 static void DisplayData(HWND hLV, const std::wstring& data) {
     ListView_DeleteAllItems(hLV);
-    int row = 0;
     size_t pos = 0;
+    int row = 0;
     bool firstLine = true;
-    while (pos < data.size()) {
+    while (pos <= data.size()) {
         size_t end = data.find(L'\n', pos);
         if (end == std::wstring::npos) end = data.size();
         std::wstring line = data.substr(pos, end - pos);
         if (!line.empty() && line.back() == L'\r') line.pop_back();
         pos = end + 1;
         if (line.empty()) continue;
-        if (firstLine) { firstLine = false; continue; } 
+        if (firstLine) { firstLine = false; continue; }
 
-        
         std::wstring cols[7];
         int col = 0;
         size_t p2 = 0;
@@ -72,32 +70,37 @@ void PasteFromClipboardToOA2() {
     if (!d.empty()) SendDataToOA2(d);
     else MessageBoxW(s_hOA2,
         L"Clipboard does not contain TitanicPassengerTable format!\n"
-        L"Only data copied via 'Copy to Clipboard' in OA1 is accepted.",
+        L"Use OA1 menu -> Copy to Clipboard first.",
         L"Paste Failed", MB_ICONWARNING);
+}
+
+void OA2LoadDDE() {
+    MessageBoxW(s_hOA2,
+        L"DDE data appears automatically when OA1 sends via DDE.\n"
+        L"Use OA1 menu -> Start DDE server.",
+        L"Load from DDE", MB_ICONINFORMATION);
 }
 
 static LRESULT CALLBACK OA2Proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_CREATE:
-        CreateWindowW(L"BUTTON", L"Paste from Clipboard",
-            WS_CHILD | WS_VISIBLE, 4, 4, 160, 24,
-            hwnd, (HMENU)BTN_PASTE, GetModuleHandleW(NULL), NULL);
         s_hList = CreateWindowExW(0, WC_LISTVIEWW, NULL,
             WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SHOWSELALWAYS,
-            0, 32, 0, 0,
+            0, 0, 0, 0,
             hwnd, (HMENU)IDC_OA2_LISTBOX, GetModuleHandleW(NULL), NULL);
         ListView_SetExtendedListViewStyle(s_hList,
             LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+        {
+            HFONT hFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Calibri");
+            SendMessage(s_hList, WM_SETFONT, (WPARAM)hFont, TRUE);
+        }
         SetupColumns(s_hList);
         return 0;
 
     case WM_SIZE:
-        MoveWindow(s_hList, 0, 32,
-            LOWORD(lParam), HIWORD(lParam) - 32, TRUE);
-        return 0;
-
-    case WM_COMMAND:
-        if (LOWORD(wParam) == BTN_PASTE) PasteFromClipboardToOA2();
+        MoveWindow(s_hList, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
         return 0;
 
     case WM_KEYDOWN:
@@ -143,7 +146,7 @@ HWND CreateOA2Window(HWND hMDIClient) {
     mcs.szClass = OA2_CLASS;
     mcs.szTitle = L"OA2  --  Data Display";
     mcs.hOwner = GetModuleHandleW(NULL);
-    mcs.x = 420; mcs.y = 10; mcs.cx = 600; mcs.cy = 460;
+    mcs.x = 620; mcs.y = 10; mcs.cx = 600; mcs.cy = 460;
     s_hOA2 = (HWND)SendMessage(hMDIClient, WM_MDICREATE, 0, (LPARAM)&mcs);
     return s_hOA2;
 }

@@ -7,3 +7,4 @@ HWND CreateOA2Window(HWND hMDIClient);
 HWND GetOA2Window();
 void SendDataToOA2(const std::wstring& data);
 void PasteFromClipboardToOA2();
+void OA2LoadDDE();

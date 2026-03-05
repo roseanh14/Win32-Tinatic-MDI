@@ -1,46 +1,39 @@
-
 #include <windows.h>
-#include "resource.h"
 #include "MDIFrame.h"
 #include "OA1Window.h"
 #include "OA2Window.h"
 #include "TitanicData.h"
-#include "ClipboardHelper.h"
 #include "DDEServer.h"
+#include "resource.h"
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
+    // Load Titanic data from CSV next to the exe
+    wchar_t exePath[MAX_PATH] = {};
+    GetModuleFileNameW(NULL, exePath, MAX_PATH);
+    std::wstring path(exePath);
+    path = path.substr(0, path.rfind(L'\\') + 1) + L"data\\titanic.csv";
+    TitanicData::LoadCSV(path);
 
-    if (!TitanicData::LoadCSV(L"data\\titanic.csv")) {
-        MessageBoxW(NULL,
-            L"Cannot find  data\\titanic.csv\n\n"
-            L"Put titanic.csv inside a 'data' folder next to AppA.exe",
-            L"Startup Error", MB_ICONERROR);
-        return 1;
-    }
+    // Init DDE server
+    DDEServerInit(hInst);
 
-    InitClipboardFormat();
+    // Register window classes
+    RegisterFrameClass(hInst);
+    RegisterOA1Class(hInst);
+    RegisterOA2Class(hInst);
 
-    DDEServerInit(hInstance);
+    // Create and show main window
+    HWND hwnd = CreateFrameWindow(hInst);
+    if (!hwnd) return 1;
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
 
-    if (!RegisterMDIFrameClass(hInstance) ||
-        !RegisterOA1Class(hInstance)      ||
-        !RegisterOA2Class(hInstance)) {
-        MessageBoxW(NULL, L"Failed to register window classes!", L"Error", MB_ICONERROR);
-        return 1;
-    }
-
-    HWND hFrame = CreateMDIFrameWindow(hInstance, nCmdShow);
-    if (!hFrame) {
-        MessageBoxW(NULL, L"Failed to create main window!", L"Error", MB_ICONERROR);
-        return 1;
-    }
-
-  
+    // Message loop
     MSG msg = {};
     while (GetMessage(&msg, NULL, 0, 0)) {
         if (!TranslateMDISysAccel(GetMDIClient(), &msg)) {
-            TranslateMessage(&msg);   
-            DispatchMessage(&msg);    
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
         }
     }
 
