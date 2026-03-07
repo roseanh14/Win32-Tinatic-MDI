@@ -129,6 +129,16 @@ build CMakeFiles\AppA.dir\AppA\DDEServer.cpp.obj: CXX_COMPILER__AppA_unscanned_D
   TARGET_COMPILE_PDB = CMakeFiles\AppA.dir\
   TARGET_PDB = AppA.pdb
 
+build CMakeFiles\AppA.dir\AppA\DDEClient.cpp.obj: CXX_COMPILER__AppA_unscanned_Debug C$:\Users\rose_\Desktop\Win32-Titanic-MDI\AppA\DDEClient.cpp || cmake_object_order_depends_target_AppA
+  CONFIG = Debug
+  DEFINES = -DUNICODE -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd
+  INCLUDES = -IC:\Users\rose_\Desktop\Win32-Titanic-MDI\AppA
+  OBJECT_DIR = CMakeFiles\AppA.dir
+  OBJECT_FILE_DIR = CMakeFiles\AppA.dir\AppA
+  TARGET_COMPILE_PDB = CMakeFiles\AppA.dir\
+  TARGET_PDB = AppA.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target AppA
@@ -137,7 +147,7 @@ build CMakeFiles\AppA.dir\AppA\DDEServer.cpp.obj: CXX_COMPILER__AppA_unscanned_D
 #############################################
 # Link the executable AppA.exe
 
-build AppA.exe: CXX_EXECUTABLE_LINKER__AppA_Debug CMakeFiles\AppA.dir\AppA\main.cpp.obj CMakeFiles\AppA.dir\AppA\MDIFrame.cpp.obj CMakeFiles\AppA.dir\AppA\OA1Window.cpp.obj CMakeFiles\AppA.dir\AppA\OA2Window.cpp.obj CMakeFiles\AppA.dir\AppA\TitanicData.cpp.obj CMakeFiles\AppA.dir\AppA\ClipboardHelper.cpp.obj CMakeFiles\AppA.dir\AppA\PipeLauncher.cpp.obj CMakeFiles\AppA.dir\AppA\DDEServer.cpp.obj || AppB.exe
+build AppA.exe: CXX_EXECUTABLE_LINKER__AppA_Debug CMakeFiles\AppA.dir\AppA\main.cpp.obj CMakeFiles\AppA.dir\AppA\MDIFrame.cpp.obj CMakeFiles\AppA.dir\AppA\OA1Window.cpp.obj CMakeFiles\AppA.dir\AppA\OA2Window.cpp.obj CMakeFiles\AppA.dir\AppA\TitanicData.cpp.obj CMakeFiles\AppA.dir\AppA\ClipboardHelper.cpp.obj CMakeFiles\AppA.dir\AppA\PipeLauncher.cpp.obj CMakeFiles\AppA.dir\AppA\DDEServer.cpp.obj CMakeFiles\AppA.dir\AppA\DDEClient.cpp.obj || AppB.exe
   CONFIG = Debug
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:windows
@@ -169,6 +179,16 @@ build CMakeFiles\AppB.dir\AppB\main.cpp.obj: CXX_COMPILER__AppB_unscanned_Debug 
   TARGET_COMPILE_PDB = CMakeFiles\AppB.dir\
   TARGET_PDB = AppB.pdb
 
+build CMakeFiles\AppB.dir\AppA\DDEClient.cpp.obj: CXX_COMPILER__AppB_unscanned_Debug C$:\Users\rose_\Desktop\Win32-Titanic-MDI\AppA\DDEClient.cpp || cmake_object_order_depends_target_AppB
+  CONFIG = Debug
+  DEFINES = -DUNICODE -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd
+  INCLUDES = -IC:\Users\rose_\Desktop\Win32-Titanic-MDI\AppB
+  OBJECT_DIR = CMakeFiles\AppB.dir
+  OBJECT_FILE_DIR = CMakeFiles\AppB.dir\AppA
+  TARGET_COMPILE_PDB = CMakeFiles\AppB.dir\
+  TARGET_PDB = AppB.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target AppB
@@ -177,7 +197,7 @@ build CMakeFiles\AppB.dir\AppB\main.cpp.obj: CXX_COMPILER__AppB_unscanned_Debug 
 #############################################
 # Link the executable AppB.exe
 
-build AppB.exe: CXX_EXECUTABLE_LINKER__AppB_Debug CMakeFiles\AppB.dir\AppB\main.cpp.obj
+build AppB.exe: CXX_EXECUTABLE_LINKER__AppB_Debug CMakeFiles\AppB.dir\AppB\main.cpp.obj CMakeFiles\AppB.dir\AppA\DDEClient.cpp.obj
   CONFIG = Debug
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:windows

@@ -1,10 +1,8 @@
-#include "DDEServer.h"
+﻿#include "DDEServer.h"
 #include "OA2Window.h"
 #include "resource.h"
 #include <ddeml.h>
 #include <string>
-
-#pragma comment(lib, "user32.lib")
 
 static DWORD        s_inst = 0;
 static HSZ          s_hSvc = NULL;
@@ -13,18 +11,15 @@ static HSZ          s_hItem = NULL;
 static std::wstring s_data;
 
 static HDDEDATA CALLBACK DdeCb(UINT type, UINT fmt,
-    HCONV, HSZ hsz1, HSZ hsz2, HDDEDATA hData, ULONG_PTR, ULONG_PTR)
+    HCONV, HSZ, HSZ, HDDEDATA, ULONG_PTR, ULONG_PTR)
 {
-    if (type == XTYP_CONNECT)
-        return (HDDEDATA)TRUE;
-
+    if (type == XTYP_CONNECT) return (HDDEDATA)TRUE;
     if (type == XTYP_REQUEST && fmt == CF_UNICODETEXT) {
         size_t bytes = (s_data.size() + 1) * sizeof(wchar_t);
         return DdeCreateDataHandle(s_inst,
             (LPBYTE)s_data.c_str(), (DWORD)bytes,
             0, s_hItem, CF_UNICODETEXT, 0);
     }
-    (void)hsz1; (void)hsz2; (void)hData;
     return NULL;
 }
 
@@ -48,40 +43,26 @@ void DDEServerShutdown() {
     s_inst = 0;
 }
 
-void DDESendToOA2(const std::wstring& data) {
+void DDESetData(const std::wstring& data) {
     s_data = data;
+}
 
-    DWORD clientInst = 0;
-    if (DdeInitializeW(&clientInst, DdeCb, APPCMD_CLIENTONLY, 0) != DMLERR_NO_ERROR) {
-        SendDataToOA2(data); return;
-    }
+// Spawn AppA.exe /ddeclient — fork of process A as DDE client
+void DDESendToOA2(const std::wstring& data) {
+    s_data = data; // server has the data ready
 
-    HSZ hSvc = DdeCreateStringHandleW(clientInst, DDE_SERVICE, CP_WINUNICODE);
-    HSZ hTopic = DdeCreateStringHandleW(clientInst, DDE_TOPIC, CP_WINUNICODE);
-    HSZ hItem = DdeCreateStringHandleW(clientInst, L"Data", CP_WINUNICODE);
+    wchar_t exePath[MAX_PATH] = {};
+    GetModuleFileNameW(NULL, exePath, MAX_PATH);
 
-    HCONV hConv = DdeConnect(clientInst, hSvc, hTopic, NULL);
-    if (hConv) {
-        HDDEDATA hResult = DdeClientTransaction(NULL, 0, hConv,
-            hItem, CF_UNICODETEXT, XTYP_REQUEST, 3000, NULL);
-        if (hResult) {
-            DWORD len = 0;
-            const wchar_t* ptr = (const wchar_t*)DdeAccessData(hResult, &len);
-            if (ptr) SendDataToOA2(std::wstring(ptr));
-            DdeUnaccessData(hResult);
-            DdeFreeDataHandle(hResult);
-        }
-        else {
-            SendDataToOA2(data); 
-        }
-        DdeDisconnect(hConv);
-    }
-    else {
-        SendDataToOA2(data);
-    }
+    std::wstring cmd = std::wstring(L"\"") + exePath + L"\" /ddeclient";
 
-    DdeFreeStringHandle(clientInst, hSvc);
-    DdeFreeStringHandle(clientInst, hTopic);
-    DdeFreeStringHandle(clientInst, hItem);
-    DdeUninitialize(clientInst);
+    STARTUPINFOW si = {};
+    si.cb = sizeof(si);
+    PROCESS_INFORMATION pi = {};
+
+    CreateProcessW(NULL, (LPWSTR)cmd.c_str(),
+        NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+
+    if (pi.hProcess) CloseHandle(pi.hProcess);
+    if (pi.hThread)  CloseHandle(pi.hThread);
 }

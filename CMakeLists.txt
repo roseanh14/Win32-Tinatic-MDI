@@ -13,7 +13,10 @@ add_executable(AppA WIN32
     AppA/ClipboardHelper.cpp
     AppA/PipeLauncher.cpp
     AppA/DDEServer.cpp
-)
+    AppA/main.cpp AppA/MDIFrame.cpp AppA/OA1Window.cpp AppA/OA2Window.cpp
+    AppA/TitanicData.cpp AppA/ClipboardHelper.cpp AppA/PipeLauncher.cpp
+    AppA/DDEServer.cpp AppA/DDEClient.cpp
+ "AppA/DDEClient.cpp")
 target_include_directories(AppA PRIVATE AppA)
 target_link_libraries(AppA user32 gdi32)
 target_compile_definitions(AppA PRIVATE UNICODE _UNICODE)
@@ -22,7 +25,7 @@ target_compile_definitions(AppA PRIVATE UNICODE _UNICODE)
 
 add_executable(AppB WIN32
     AppB/main.cpp
-)
+ "AppA/DDEClient.cpp")
 target_include_directories(AppB PRIVATE AppB)
 target_link_libraries(AppB user32 gdi32)
 target_compile_definitions(AppB PRIVATE UNICODE _UNICODE)

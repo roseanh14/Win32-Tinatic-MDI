@@ -85,7 +85,6 @@ static LRESULT CALLBACK OA1Proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             SendMessage(s_hList, WM_SETFONT, (WPARAM)hFont, TRUE);
         }
         SetupColumns(s_hList);
-        RefreshOA1List();
         return 0;
 
     case WM_SIZE:

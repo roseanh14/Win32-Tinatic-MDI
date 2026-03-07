@@ -55,5 +55,5 @@ std::wstring PasteFromClipboard() {
     }
 
     CloseClipboard();
-    return result; //
+    return result; 
 }
